@@ -15,7 +15,7 @@
     --ink:#1B1A17;          /* warm near-black */
     --ink-soft:#56524A;     /* muted ink */
     --rule:#1B1A1722;       /* hairline */
-    --accent:#C13A2B;       /* controlled vermilion */
+    --accent:#0B8A7C;       /* Weedmaps teal (deepened for legibility on cream) */
     --slate:#4A5A66;        /* muted secondary */
     --measure:760px;
   }
@@ -25,7 +25,7 @@
     font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.6;
     -webkit-font-smoothing:antialiased;font-optical-sizing:auto}
   ::selection{background:var(--accent);color:var(--paper)}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid #C13A2B55}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid #0B8A7C55}
   a:hover{border-bottom-color:var(--accent)}
 
   .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
@@ -196,7 +196,7 @@
       <div class="chart-block"><div class="cap">Where the work lives — commits by domain (git era)</div><div class="chartbox" style="height:240px"><canvas id="domainChart"></canvas></div></div>
       <div class="chart-block"><div class="cap">Commit activity — year × month intensity</div>
         <div id="heatmap" style="overflow-x:auto"></div>
-        <div class="heatlegend"><span>less</span><span class="sw" style="background:#E4DFD2"></span><span class="sw" style="background:#E2B9AE"></span><span class="sw" style="background:#CE8475"></span><span class="sw" style="background:#C13A2B"></span><span class="sw" style="background:#8E2114"></span><span>more</span></div>
+        <div class="heatlegend"><span>less</span><span class="sw" style="background:#E4DFD2"></span><span class="sw" style="background:#BBE0DA"></span><span class="sw" style="background:#74C5BB"></span><span class="sw" style="background:#1C9C8E"></span><span class="sw" style="background:#0A6F64"></span><span>more</span></div>
         <p class="note" style="margin-top:10px">2021–2022 predate the local clones; QA &amp; automation work from those years lives in the timeline above, not in this git-derived grid.</p>
       </div>
     </div>
@@ -262,7 +262,7 @@
 </div>
 
 <script>
-const INK="#1B1A17", ACCENT="#C13A2B", SOFT="#56524A", GRID="#1B1A1718";
+const INK="#1B1A17", ACCENT="#0B8A7C", SOFT="#56524A", GRID="#1B1A1718";
 Chart.defaults.color=SOFT;
 Chart.defaults.font.family="'IBM Plex Mono', monospace";
 Chart.defaults.font.size=11;
@@ -313,7 +313,7 @@ new Chart(document.getElementById('domainChart'),{type:'bar',
   const ym={"2020-03":10,"2020-04":1,"2023-01":1,"2023-04":2,"2023-05":5,"2023-06":10,"2023-07":7,"2023-08":10,"2023-09":16,"2023-10":14,"2023-11":5,"2023-12":2,"2024-01":7,"2024-02":8,"2024-03":9,"2024-04":5,"2024-05":9,"2024-06":7,"2024-07":9,"2024-08":7,"2024-09":14,"2024-10":48,"2024-11":21,"2024-12":13,"2025-01":20,"2025-02":33,"2025-03":6,"2025-04":11,"2025-05":33,"2025-06":126,"2025-07":28,"2025-08":65,"2025-09":179,"2025-10":237,"2025-11":91,"2025-12":60,"2026-01":143,"2026-02":82,"2026-03":117,"2026-04":86,"2026-05":99,"2026-06":112};
   const years=["2020","2023","2024","2025","2026"];
   const mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const color=v=>(v==null||v===0)?"#E4DFD2":v<20?"#E2B9AE":v<60?"#CE8475":v<120?"#C13A2B":"#8E2114";
+  const color=v=>(v==null||v===0)?"#E4DFD2":v<20?"#BBE0DA":v<60?"#74C5BB":v<120?"#1C9C8E":"#0A6F64";
   let h="<table class='heat'><thead><tr><th></th>";
   mo.forEach(m=>h+="<th>"+m[0]+"</th>"); h+="</tr></thead><tbody>";
   years.forEach(y=>{
