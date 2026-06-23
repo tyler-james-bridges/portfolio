@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tyler James-Bridges — Engineering Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F3EFE6;        /* warm bone */
+    --paper2:#ECE7DA;       /* slightly deeper panel */
+    --ink:#1B1A17;          /* warm near-black */
+    --ink-soft:#56524A;     /* muted ink */
+    --rule:#1B1A1722;       /* hairline */
+    --accent:#C13A2B;       /* controlled vermilion */
+    --slate:#4A5A66;        /* muted secondary */
+    --measure:760px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);
+    font-family:"Newsreader",Georgia,serif;font-size:19px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;font-optical-sizing:auto}
+  ::selection{background:var(--accent);color:var(--paper)}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid #C13A2B55}
+  a:hover{border-bottom-color:var(--accent)}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
+
+  /* mono labels */
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .kicker{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent);font-weight:500}
+
+  /* top masthead bar */
+  .mast{display:flex;justify-content:space-between;align-items:baseline;
+    padding:22px 0 18px;border-bottom:2px solid var(--ink)}
+  .mast .id{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+  .mast .id b{color:var(--accent)}
+
+  /* hero */
+  header{padding:78px 0 60px;border-bottom:1px solid var(--rule)}
+  h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(46px,11vw,118px);
+    line-height:.92;letter-spacing:-.02em;font-optical-sizing:auto}
+  h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+  .standfirst{font-size:clamp(20px,2.6vw,26px);line-height:1.45;color:var(--ink-soft);
+    max-width:720px;margin-top:34px;font-weight:400}
+  .standfirst .lead{color:var(--ink)}
+
+  /* section scaffold: mono sidenote + content */
+  .row{display:grid;grid-template-columns:200px 1fr;gap:clamp(24px,5vw,64px);
+    padding:60px 0;border-bottom:1px solid var(--rule);align-items:start}
+  .row > .side{position:sticky;top:24px}
+  .side .num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft)}
+  .side h2{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:500;margin-top:8px;line-height:1.5}
+  .body{max-width:var(--measure)}
+
+  /* stat ledger */
+  .ledger{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink);margin-top:8px}
+  .ledger .cell{padding:18px 16px 16px 0;border-right:1px solid var(--rule)}
+  .ledger .cell:last-child{border-right:none}
+  .ledger .n{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(30px,5vw,44px);line-height:1}
+  .ledger .l{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:10px}
+
+  /* career arc — ruled timeline */
+  .arc .item{display:grid;grid-template-columns:120px 1fr;gap:28px;padding:22px 0;border-top:1px solid var(--rule)}
+  .arc .item:first-child{border-top:none}
+  .arc .yr{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);padding-top:6px;letter-spacing:.04em}
+  .arc h3{font-family:"Fraunces",serif;font-weight:600;font-size:24px;line-height:1.15;letter-spacing:-.01em}
+  .arc p{color:var(--ink-soft);font-size:18px;margin-top:6px;max-width:560px}
+
+  /* charts */
+  .chart-wrap{border-top:2px solid var(--ink);padding-top:8px}
+  .chart-block{padding:22px 0;border-bottom:1px solid var(--rule)}
+  .chart-block:last-child{border-bottom:none}
+  .chart-block .cap{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px}
+  .chartbox{position:relative;height:230px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .twocol .chart-block:first-child{border-right:1px solid var(--rule);padding-right:32px}
+  .twocol .chart-block:last-child{padding-left:32px;border-bottom:1px solid var(--rule)}
+
+  /* projects — contents-page style */
+  .proj{display:grid;grid-template-columns:48px 1fr;gap:24px;padding:30px 0;border-top:1px solid var(--rule)}
+  .proj:first-child{border-top:2px solid var(--ink)}
+  .proj .pn{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--accent);padding-top:8px}
+  .proj h3{font-family:"Fraunces",serif;font-weight:900;font-size:30px;line-height:1.05;letter-spacing:-.015em}
+  .proj .role{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--slate);margin:6px 0 12px}
+  .proj p{color:var(--ink-soft);max-width:640px}
+  .proj .stack{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+  .proj .chip{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+    border:1px solid var(--ink);border-radius:0;padding:3px 9px;color:var(--ink)}
+
+  /* skills */
+  .tb{border-top:2px solid var(--ink)}
+  .tb .line{display:grid;grid-template-columns:160px 1fr;gap:24px;padding:14px 0;border-bottom:1px solid var(--rule)}
+  .tb .k{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+  .tb .v{font-size:18px}
+
+  .note{font-family:"IBM Plex Mono",monospace;font-size:11.5px;line-height:1.7;color:var(--ink-soft);
+    max-width:760px;margin-top:30px}
+
+  footer{padding:46px 0 70px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
+  footer .colophon{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft)}
+
+  @media(max-width:820px){
+    .row{grid-template-columns:1fr;gap:18px;padding:44px 0}
+    .row > .side{position:static}
+    .ledger{grid-template-columns:1fr 1fr}
+    .twocol{grid-template-columns:1fr}
+    .twocol .chart-block:first-child{border-right:none;padding-right:0}
+    .twocol .chart-block:last-child{padding-left:0;border-top:1px solid var(--rule)}
+    .arc .item{grid-template-columns:1fr;gap:6px}
+    .proj{grid-template-columns:1fr;gap:8px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mast">
+    <span class="id"><b>T·J·B</b> — Engineering Ledger</span>
+    <span class="id">2016 — 2026</span>
+  </div>
+
+  <header>
+    <h1>Tyler<br>James-Bridges<em>.</em></h1>
+    <p class="standfirst"><span class="lead">A platform &amp; AI engineer who builds the tools that build software.</span> A decade in the craft — beginning in hands-on quality assurance, into test automation and developer experience, and onward to autonomous AI tooling.</p>
+  </header>
+
+  <!-- LEDGER -->
+  <div class="row">
+    <div class="side"><div class="num">§ 00</div><h2>The Record</h2></div>
+    <div class="body">
+      <div class="ledger">
+        <div class="cell"><div class="n">~10</div><div class="l">Years in software · since 2016</div></div>
+        <div class="cell"><div class="n">1,768</div><div class="l">Commits · git era, ’20–’26</div></div>
+        <div class="cell"><div class="n">47</div><div class="l">Repositories</div></div>
+        <div class="cell"><div class="n">TS</div><div class="l">Primary language now</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAREER ARC -->
+  <div class="row arc">
+    <div class="side"><div class="num">§ 01</div><h2>Career Arc</h2></div>
+    <div class="body">
+      <div class="item"><div class="yr">2016</div><div>
+        <h3>Manual Quality Assurance</h3>
+        <p>Entered software hands-on at Weedmaps — authoring and executing test cases, owning coverage and release quality. Jira records QA test-case work in the Weedmaps Web and Core projects from August 2017.</p></div></div>
+      <div class="item"><div class="yr">2023</div><div>
+        <h3>Quality Engineering &amp; Test Automation</h3>
+        <p>Moved into the dedicated Quality Engineering practice and built out end-to-end and smoke automation at scale — a Page Object Model suite in wm-turbo covering Dispatch, Admin, Moonshot and more, plus Playwright suites in admin and moonshot (~240+ automation commits). <span class="mono" style="font-size:13px;color:var(--slate)">First QE ticket: Mar 2023.</span></p></div></div>
+      <div class="item"><div class="yr">2025</div><div>
+        <h3>Developer Experience — peak output</h3>
+        <p>Stepped into Developer Experience, starting with Playwright test automation and expanding into service scaffolding, CI/CD, and the Smoke CLI. 889 commits in a single year. <span class="mono" style="font-size:13px;color:var(--slate)">First DevEx ticket: Jan 2025.</span></p></div></div>
+      <div class="item"><div class="yr">2026</div><div>
+        <h3>AI &amp; Agent Tooling</h3>
+        <p>Shipped an internal MCP server and autonomous AI workers to production. Reusable workflows and agent tooling spreading across the org.</p></div></div>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="row">
+    <div class="side"><div class="num">§ 02</div><h2>By the Numbers</h2></div>
+    <div class="body chart-wrap">
+      <div class="twocol">
+        <div class="chart-block"><div class="cap">Commits by year</div><div class="chartbox"><canvas id="yearChart"></canvas></div></div>
+        <div class="chart-block"><div class="cap">Files touched, by type</div><div class="chartbox"><canvas id="techChart"></canvas></div></div>
+      </div>
+      <div class="chart-block"><div class="cap">Commits per month — Nov 2024 → Jun 2026</div><div class="chartbox" style="height:210px"><canvas id="monthChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <div class="row">
+    <div class="side"><div class="num">§ 03</div><h2>Flagship Work</h2></div>
+    <div class="body">
+      <div class="proj"><div class="pn">01</div><div>
+        <h3>End-to-End Test Automation</h3><div class="role">Playwright · Page Object Model · ~240+ commits</div>
+        <p>Built and owned a large end-to-end and smoke-test automation framework across the Weedmaps web platform. The core suite lives in <span class="mono" style="font-size:13px">wm-turbo</span> (<span class="mono" style="font-size:13px">apps/qe</span>) — a Page Object Model architecture with smoke suites covering Dispatch, client &amp; operations Admin, Moonshot, ads, point-of-sale, and orders — with dedicated Playwright suites in <span class="mono" style="font-size:13px">admin</span> and <span class="mono" style="font-size:13px">moonshot</span>, including accessibility coverage. All wired into CI for pre-merge confidence.</p>
+        <div class="stack"><span class="chip">Playwright</span><span class="chip">TypeScript</span><span class="chip">Page Object Model</span><span class="chip">Smoke / E2E</span><span class="chip">CI pipelines</span></div></div></div>
+
+      <div class="proj"><div class="pn">02</div><div>
+        <h3>Rhizome</h3><div class="role">Autonomous AI worker · TypeScript · GitHub Actions</div>
+        <p>A self-initiating agent that runs on a scheduled workflow to scan repositories, action tickets, and open pull requests — its identity, skills, and guardrails written entirely in plain-English markdown. Built for safe, auditable autonomy on production code.</p>
+        <div class="stack"><span class="chip">TypeScript</span><span class="chip">GitHub Actions</span><span class="chip">Agent design</span><span class="chip">Jira / GH CLI</span></div></div></div>
+
+      <div class="proj"><div class="pn">03</div><div>
+        <h3>ai-platform — MCP Server</h3><div class="role">AI infrastructure · Continuous delivery</div>
+        <p>An internal Model Context Protocol server exposing workflow tools and institutional knowledge to AI agents behind a standard protocol. Ships under continuous delivery — merges to main deploy straight to production after CI.</p>
+        <div class="stack"><span class="chip">TypeScript</span><span class="chip">MCP</span><span class="chip">CD to prod</span></div></div></div>
+
+      <div class="proj"><div class="pn">04</div><div>
+        <h3>Service Scaffolding &amp; CI/CD</h3><div class="role">Developer experience · Org-wide platform</div>
+        <p>A template system plus a library of reusable GitHub composite actions — security scanning, reviewer assignment, PR automation, standardized pipelines. Updates propagate to downstream services automatically, standardizing how 40+ repositories are built and shipped.</p>
+        <div class="stack"><span class="chip">GitHub Actions</span><span class="chip">copier</span><span class="chip">Docker</span><span class="chip">Make</span></div></div></div>
+
+      <div class="proj"><div class="pn">05</div><div>
+        <h3>Smoke CLI</h3><div class="role">Developer tooling · TypeScript · 147 commits</div>
+        <p>“Smoke once, test everywhere.” A CLI that runs the same smoke tests from localhost to CI without changing developer flow — removing environment drift from the pre-merge loop.</p>
+        <div class="stack"><span class="chip">TypeScript</span><span class="chip">Node</span><span class="chip">semantic-release</span></div></div></div>
+
+      <div class="proj"><div class="pn">06</div><div>
+        <h3>DSU — Automated Stand-Up</h3><div class="role">Automation · Jira + GitHub</div>
+        <p>Aggregates per-engineer activity from Jira and GitHub into a deterministic, sanitized daily report, published automatically — turning scattered activity into status with no manual writing.</p>
+        <div class="stack"><span class="chip">TypeScript</span><span class="chip">Jira</span><span class="chip">GitHub</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- TOOLBOX -->
+  <div class="row">
+    <div class="side"><div class="num">§ 04</div><h2>Toolbox</h2></div>
+    <div class="body">
+      <div class="tb">
+        <div class="line"><div class="k">Languages</div><div class="v">TypeScript · JavaScript · Ruby · Go · Bash</div></div>
+        <div class="line"><div class="k">Backend</div><div class="v">Node / NestJS · Rails · OpenSearch</div></div>
+        <div class="line"><div class="k">Platform</div><div class="v">GitHub Actions · CI/CD · Docker · Terraform</div></div>
+        <div class="line"><div class="k">AI</div><div class="v">MCP servers · agent harnesses · LLM tooling</div></div>
+        <div class="line"><div class="k">Frontend</div><div class="v">React · Next.js · React Native</div></div>
+        <div class="line"><div class="k">Practice</div><div class="v">Test automation · Developer experience · Observability</div></div>
+      </div>
+      <p class="note">Commit figures derive from authored git history across local repository clones, 2020–2026 (merge commits excluded; 2026 through June) — they capture only the automation-era slice of the career. The earlier manual-QA years are corroborated by Jira, where assigned QA test-case work at Weedmaps dates to August 2017. Local clones may not hold full upstream history, so totals are conservative.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="colophon">Set in Fraunces, Newsreader &amp; IBM Plex Mono · Built from commit data</span>
+    <span class="colophon">— add your contact links —</span>
+  </footer>
+
+</div>
+
+<script>
+const INK="#1B1A17", ACCENT="#C13A2B", SOFT="#56524A", GRID="#1B1A1718";
+Chart.defaults.color=SOFT;
+Chart.defaults.font.family="'IBM Plex Mono', monospace";
+Chart.defaults.font.size=11;
+
+new Chart(document.getElementById('yearChart'),{type:'bar',
+  data:{labels:['2020','2023','2024','2025','2026*'],
+    datasets:[{data:[11,72,157,889,639],
+      backgroundColor:['#1B1A17','#1B1A17','#1B1A17','#1B1A17',ACCENT],
+      borderRadius:0,barPercentage:.7,categoryPercentage:.8}]},
+  options:{plugins:{legend:{display:false},tooltip:{backgroundColor:INK,bodyColor:'#F3EFE6',titleColor:'#F3EFE6',cornerRadius:0}},
+    maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},border:{color:INK}},
+            y:{grid:{color:GRID},border:{display:false},beginAtZero:true,ticks:{maxTicksLimit:5}}}}});
+
+new Chart(document.getElementById('techChart'),{type:'bar',
+  data:{labels:['TypeScript','YAML','JSON','Markdown','JavaScript','Ruby','Terraform'],
+    datasets:[{data:[2135,954,725,220,121,37,23],
+      backgroundColor:(c)=>c.dataIndex===0?ACCENT:INK,borderRadius:0,barPercentage:.78}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{backgroundColor:INK,bodyColor:'#F3EFE6',titleColor:'#F3EFE6',cornerRadius:0}},
+    maintainAspectRatio:false,
+    scales:{x:{grid:{color:GRID},border:{color:INK},beginAtZero:true},
+            y:{grid:{display:false},border:{display:false}}}}});
+
+const months=["Nov '24","Dec","Jan '25","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan '26","Feb","Mar","Apr","May","Jun"];
+const mvals=[21,13,20,33,6,11,33,126,28,65,179,237,91,60,143,82,117,86,99,112];
+new Chart(document.getElementById('monthChart'),{type:'line',
+  data:{labels:months,datasets:[{data:mvals,borderColor:INK,borderWidth:1.5,tension:0,
+    pointRadius:(c)=>c.raw===Math.max(...mvals)?4:0,pointBackgroundColor:ACCENT,pointBorderColor:ACCENT,
+    fill:false}]},
+  options:{plugins:{legend:{display:false},tooltip:{backgroundColor:INK,bodyColor:'#F3EFE6',titleColor:'#F3EFE6',cornerRadius:0}},
+    maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},border:{color:INK},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:8}},
+            y:{grid:{color:GRID},border:{display:false},beginAtZero:true,ticks:{maxTicksLimit:5}}}}});
+</script>
+</body>
+</html>
