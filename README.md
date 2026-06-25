@@ -1,6 +1,13 @@
-# Engineering Ledger — a portfolio built from your own git history
+# Engineering Ledger — a portfolio built from your git history **and** your issue tracker
 
-A single-page, editorially-designed engineering portfolio generated from your **actual commit and ticket history** instead of a hand-written résumé. The agent mines your repos, reconstructs your career arc, cross-references your issue tracker for the years before your local git history begins, and ships a self-contained site to GitHub Pages.
+A single-page, editorially-designed engineering portfolio generated from your **actual commit and ticket history** instead of a hand-written résumé.
+
+It uses **two evidence sources, deliberately**:
+
+- **Git** gives you the recent, quantitative record — commits by year, repo, language, and domain.
+- **Your issue tracker (Jira / Linear / etc.)** reconstructs the years your local git history can't see. This is the part people miss: local clones are shallow and often only go back a few years, so the tracker is what proves the *early* career.
+
+In the live example, git covered 2020 onward — but **Jira reconstructed the manual-QA years starting in 2016**, dating the move from manual testing → test automation → platform work with real ticket evidence. Without the tracker, the timeline would have started years too late and erased an entire era.
 
 **Live example:** https://tyler-james-bridges.github.io/portfolio/
 
@@ -11,6 +18,7 @@ A single-page, editorially-designed engineering portfolio generated from your **
 ## What you get
 
 - A career timeline reconstructed from real data (commits by year/month, by repo, by language, by domain).
+- **The pre-git years recovered from your issue tracker** — earliest tickets, era-transition dates, and the work that happened before your local clones begin.
 - A "where the work lives" breakdown so breadth is visible, not just claimed.
 - A commit-activity heatmap rendered from your own data (not a screenshot of GitHub's).
 - Flagship project write-ups in problem → approach → impact form.
@@ -41,10 +49,13 @@ evidence mined from my own git history, then help me publish it to GitHub Pages.
    Treat local clones as possibly shallow — say so, and never present these as
    my complete history.
 
-3. FILL THE GAP. My career predates my local git history. Pull from my issue
-   tracker (Jira/Linear/etc., if connected) the earliest tickets and the dates
-   my major eras began (e.g. when I moved from QA to automation to platform work).
-   Use these as verifiable anchors for the timeline.
+3. ISSUE TRACKER — DO NOT SKIP. My career predates my local git history, so the
+   git numbers alone will undercount me by years. Query my issue tracker
+   (Jira/Linear/etc.) for: the date of my earliest assigned/reported ticket
+   (my real start), and the first ticket in each major project/era (e.g. when QA
+   work began, when a dedicated automation or platform project opened). Use these
+   as the verifiable anchors that extend the timeline back before any commit.
+   Call out explicitly which eras come from the tracker vs. from git.
 
 4. CATEGORIZE. Group repositories into a handful of domains (product, test
    automation, platform/CI, backend, AI, infra, …) and total commits per domain
