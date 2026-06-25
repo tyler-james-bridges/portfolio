@@ -2,12 +2,13 @@
 
 A single-page, editorially-designed engineering portfolio generated from your **actual commit and ticket history** instead of a hand-written résumé.
 
-It uses **two evidence sources, deliberately**:
+It draws on **three inputs, deliberately**:
 
-- **Git** gives you the recent, quantitative record — commits by year, repo, language, and domain.
-- **Your issue tracker (Jira / Linear / etc.)** reconstructs the years your local git history can't see. This is the part people miss: local clones are shallow and often only go back a few years, so the tracker is what proves the *early* career.
+- **Git** — the recent, quantitative record: commits by year, repo, language, and domain.
+- **Your issue tracker (Jira / Linear / etc.)** — extends the timeline back to its *earliest records*, before your local clones begin. Pulling **anchor dates** (your earliest ticket, the first ticket in each major project/era) is reliable; pulling *complete* ticket counts may be limited by the connector.
+- **You** — for whatever predates even the tracker. The agent reconciles the data with your memory and lets you correct it.
 
-In the live example, git covered 2020 onward — but **Jira reconstructed the manual-QA years starting in 2016**, dating the move from manual testing → test automation → platform work with real ticket evidence. Without the tracker, the timeline would have started years too late and erased an entire era.
+In the live example, git only reached back to 2020, and **Jira's earliest record was a manual-QA ticket from August 2017** — already years before any commit, which dated the move from manual testing → test automation → platform work. The **2016** start came one step further back, from **me correcting the agent**: I was doing manual QA at Weedmaps before Jira's records reach. So the timeline is git + tracker + a human correction — and it stays explicit about which is which.
 
 **Live example:** https://tyler-james-bridges.github.io/portfolio/
 
@@ -18,7 +19,7 @@ In the live example, git covered 2020 onward — but **Jira reconstructed the ma
 ## What you get
 
 - A career timeline reconstructed from real data (commits by year/month, by repo, by language, by domain).
-- **The pre-git years recovered from your issue tracker** — earliest tickets, era-transition dates, and the work that happened before your local clones begin.
+- **The pre-git years recovered from your issue tracker** — earliest tickets and era-transition dates (anchor dates; full ticket counts may be connector-limited), plus anything earlier you supply from memory.
 - A "where the work lives" breakdown so breadth is visible, not just claimed.
 - A commit-activity heatmap rendered from your own data (not a screenshot of GitHub's).
 - Flagship project write-ups in problem → approach → impact form.
@@ -55,7 +56,10 @@ evidence mined from my own git history, then help me publish it to GitHub Pages.
    (my real start), and the first ticket in each major project/era (e.g. when QA
    work began, when a dedicated automation or platform project opened). Use these
    as the verifiable anchors that extend the timeline back before any commit.
-   Call out explicitly which eras come from the tracker vs. from git.
+   Call out explicitly which eras come from the tracker vs. from git. Expect the
+   connector to limit full ticket counts — anchor dates are the reliable part. And
+   if the tracker doesn't reach my true start date, ASK me: I'll supply it, and
+   you should mark it as a human-confirmed anchor, not invent one.
 
 4. CATEGORIZE. Group repositories into a handful of domains (product, test
    automation, platform/CI, backend, AI, infra, …) and total commits per domain
@@ -81,6 +85,7 @@ evidence mined from my own git history, then help me publish it to GitHub Pages.
 
 - **Confirm identities before counting.** Commit-author data is messy; one wrong email skews everything.
 - **Scope the numbers.** Local clones are often shallow and your work email may not map to a personal contribution graph. Label commit metrics as the "git era" and lean on the issue tracker for earlier years.
+- **Don't let the earliest data point become your start date.** If neither git nor the tracker reaches your true beginning, ask and use a human-confirmed date — say which anchors are git, which are tracker, and which are you.
 - **Don't fabricate impact.** Volume and range come from data; outcomes (flake reduction, coverage, deploy frequency, adoption) must come from you. Leave them out rather than inventing them — and never ship `[bracketed placeholders]` to a public page.
 - **Verify before publishing.** Re-read the committed file and load the live page before calling it done.
 - **Privacy.** Decide explicitly what's public (contact links, employer names, internal ticket IDs). Strip anything company-private.
